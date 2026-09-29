@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iglum Logos</title>
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#1A0E2E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #1A0E2E;
+      --night-2: #241440;
+      --dusk: #3B1C6B;
+      --amethyst: #7A4FC2;
+      --amethyst-soft: #B9A2E6;
+      --bone: #EFE9F7;
+      --muted: #8E80A8;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: flex; flex-direction: column;
+      background: var(--night);
+      color: var(--bone);
+      font: 14px/1.5 "JetBrains Mono", ui-monospace, Consolas, monospace;
+    }
+
+    /* tmux-style tab bar */
+    .tabs {
+      display: flex; align-items: stretch;
+      background: var(--night-2);
+      border-bottom: 1px solid var(--dusk);
+      user-select: none;
+    }
+    .session { padding: 6px 12px; background: var(--amethyst); color: var(--night); font-weight: 700; }
+    .tabs button {
+      font: inherit; color: var(--muted);
+      background: none; border: 0; cursor: pointer;
+      padding: 6px 14px;
+    }
+    .tabs button:hover { color: var(--bone); }
+    .tabs button[aria-selected="true"] { background: var(--bone); color: var(--night); font-weight: 700; }
+    .tabs button:focus-visible { outline: 2px solid var(--amethyst-soft); outline-offset: -2px; }
+    .clock { margin-left: auto; padding: 6px 12px; color: var(--muted); }
+
+    /* stage */
+    main {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 40px; padding: 32px 16px;
+      min-height: 0;
+    }
+    .logo {
+      width: min(80vw, 820px); height: min(52vh, 420px);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo img { max-width: 100%; max-height: 100%; display: block; }
+    .logo.appear img { animation: appear .35s ease-out; }
+    @keyframes appear { from { opacity: 0; transform: translateY(6px); } }
+
+    .prompt { width: min(80vw, 820px); color: var(--muted); overflow-wrap: anywhere; }
+    .prompt .ps1 { color: var(--amethyst-soft); }
+    .prompt .cmd { color: var(--bone); }
+    .prompt p { margin: 0; }
+    .cursor {
+      display: inline-block; width: .6em; height: 1.1em; vertical-align: text-bottom;
+      background: var(--bone); animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* vim-style status line */
+    .status {
+      display: flex; gap: 16px;
+      padding: 4px 12px;
+      background: var(--night-2); border-top: 1px solid var(--dusk);
+      color: var(--muted); font-size: 12px;
+    }
+    .status .mode { color: var(--night); background: var(--amethyst-soft); padding: 0 8px; font-weight: 700; }
+    .status .right { margin-left: auto; }
+
+    @media (max-width: 600px) {
+      body { font-size: 12px; }
+      .tabs button { padding: 6px 10px; }
+      .clock, .status .keys { display: none; }
+      .logo { width: calc(100vw - 32px); height: 42vh; }
+      .prompt { width: calc(100vw - 32px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cursor, .logo.appear img { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="tabs" role="tablist" aria-label="Logos">
+    <span class="session">[iglum]</span>
+    <!-- tabs are generated from LOGOS below -->
+    <span class="clock" id="clock"></span>
+  </nav>
+
+  <main role="tabpanel" id="panel">
+    <div class="logo" id="logo"><img id="img" alt=""></div>
+    <div class="prompt">
+      <p><span class="ps1">iglum@runes:~/logos$</span> <span class="cmd" id="cmd"></span></p>
+      <p id="desc"></p>
+      <p><span class="ps1">iglum@runes:~/logos$</span> <span class="cursor"></span></p>
+    </div>
+  </main>
+
+  <footer class="status">
+    <span class="mode">NORMAL</span>
+    <span id="file"></span>
+    <span class="keys">1–7 switch · ←/→ next</span>
+    <span class="right" id="pos"></span>
+  </footer>
+
+  <script>
+    const LOGOS = [
+      { file: "fi-bindrune-reversed.svg", desc: "# FI bindrune: Fehu (F) and Isa (I) joined into one sign" },
+      { file: "ei-bindrune-reversed.svg", desc: "# EI bindrune: an E of three branches, its top branch climbing into Isa" },
+      { file: "iglum-lockup-horizontal-reversed.svg", desc: "# Iglum lockup: FI, the runic separator, and the IGLUM wordmark" },
+      { file: "iglum-ei-lockup-horizontal-reversed.svg", desc: "# Iglum lockup: EI, the runic separator, and the IGLUM wordmark" },
+      { file: "fi-stone-avatar-reversed.svg", desc: "# FI rune stone: the bindrune carved out of a casting stone" },
+      { file: "ei-stone-avatar-reversed.svg", desc: "# EI rune stone: the bindrune carved out of a casting stone" },
+      { file: "iglumania-reversed.svg", desc: "# Iglumania: an igloo whose doorway and skylight spell a lowercase i" },
+    ];
+
+    const tabs = document.querySelector(".tabs");
+    const clock = document.getElementById("clock");
+    const buttons = LOGOS.map((logo, i) => {
+      const b = document.createElement("button");
+      b.textContent = i + 1;
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-controls", "panel");
+      b.setAttribute("aria-label", logo.file.replace(/-reversed\.svg$/, ""));
+      b.addEventListener("click", () => show(i));
+      tabs.insertBefore(b, clock);
+      return b;
+    });
+
+    const logoBox = document.getElementById("logo");
+    const img = document.getElementById("img");
+    let current = -1;
+
+    function show(i) {
+      i = (i + LOGOS.length) % LOGOS.length;
+      if (i === current) return;
+      current = i;
+      const { file, desc } = LOGOS[i];
+      img.src = "logos/" + file;
+      img.alt = desc.replace(/^# /, "");
+      buttons.forEach((b, j) => {
+        b.setAttribute("aria-selected", j === i);
+        b.tabIndex = j === i ? 0 : -1;
+      });
+      document.getElementById("cmd").textContent = "cat " + file;
+      document.getElementById("desc").textContent = desc;
+      document.getElementById("file").textContent = file;
+      document.getElementById("pos").textContent = (i + 1) + "/" + LOGOS.length;
+      logoBox.classList.remove("appear"); void logoBox.offsetWidth; logoBox.classList.add("appear");
+      history.replaceState(null, "", "#" + (i + 1));
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const n = parseInt(e.key, 10);
+      if (n >= 1 && n <= LOGOS.length) show(n - 1);
+      else if (e.key === "ArrowRight" || e.key === "l") show(current + 1);
+      else if (e.key === "ArrowLeft" || e.key === "h") show(current - 1);
+    });
+
+    function tick() {
+      const d = new Date();
+      clock.textContent = d.toLocaleDateString("en-GB", { day: "2-digit", month: "short" }) + " " +
+        d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    }
+    tick(); setInterval(tick, 10000);
+
+    const start = parseInt(location.hash.slice(1), 10);
+    show(start >= 1 && start <= LOGOS.length ? start - 1 : 0);
+  </script>
+</body>
+</html>
